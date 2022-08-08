@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MovieModule } from 'src/movie/movies.module';
-import { RacconModule } from 'src/raccon/raccon.module';
+import { MovieModule } from '../movie/movies.module';
+import { RacconModule } from '../raccon/raccon.module';
 
 
 @Module({

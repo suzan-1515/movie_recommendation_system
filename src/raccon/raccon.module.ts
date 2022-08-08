@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
                     className: 'movie',
                     redisUrl: `${configService.get<string>('REDIS_HOST')}`,
                     redisPort:configService.get<number>('REDIS_PORT'),
+                    redisAuth: configService.get<string>('REDIS_AUTH'),
                   })
                 return raccon;
             },

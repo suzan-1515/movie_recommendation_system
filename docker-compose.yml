@@ -14,14 +14,14 @@ services:
           - 9229:9229
       links:
         - mysql
-        - redis
+        # - redis
       networks:
           - movie-rs-network
       volumes:
           - .:/usr/src/app
           - /usr/src/app/node_modules
       depends_on:
-          - redis
+          # - redis
           - mysql
       env_file:
           - .env
@@ -44,21 +44,21 @@ services:
           - /usr/src/app/node_modules
       links:
         - mysql
-        - redis
+        # - redis
       depends_on:
-          - redis
+          # - redis
           - mysql
       env_file:
           - .env
       restart: unless-stopped
     
-    redis:
-      container_name: redis
-      image: redis:5
-      networks:
-        - movie-rs-network
-      volumes:
-      - movie_rs_redis_data:/data
+    # redis:
+    #   container_name: redis
+    #   image: redis:5
+    #   networks:
+    #     - movie-rs-network
+    #   volumes:
+    #   - movie_rs_redis_data:/data
     mysql:
       container_name: mysql
       restart: always
@@ -77,6 +77,6 @@ networks:
   movie-rs-network:
 volumes:
   movie_rs_mysql_data:
-  movie_rs_redis_data:
-  redis:
-    driver: local
+  # movie_rs_redis_data:
+  # redis:
+  #   driver: local
