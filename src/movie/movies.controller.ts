@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Optional, Param, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Inject, Optional, Param, Post, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 import { MovieReactionRequestDto } from './dto/movie-reaction-request.dto';
 import { MovieReactionDto } from './dto/movie-reaction.dto';
@@ -136,6 +136,18 @@ export class MoviesController {
     })
     async watchedMovies(@Param('userId') userId: string) {
         return this.moviesService.watchedMovies(userId);
+    }
+
+    @Get('/random')
+    @ApiOkResponse({ 
+        description: 'List of random movies', 
+        type: MovieReactionDto, isArray: true, 
+    })
+    async randomMovies(@Query('genresId') genresId: string) {
+        if (typeof(genresId) == "undefined" || genresId == null) {
+            throw new BadRequestException('GenresId is required');
+        }
+        return this.moviesService.getRandomMovies(genresId);
     }
 
 }

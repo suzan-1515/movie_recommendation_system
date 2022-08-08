@@ -125,4 +125,16 @@ export class MoviesService {
 
         return movies;
     }
+
+    async getRandomMovies(genresId: string): Promise<any> {
+        console.log(`Random movies`);
+        const args = {
+            query: {
+                with_genres: genresId,
+            },
+        };
+        const movies = await this.theMovieDbService.getDiscoverEndpoint().movie(args);
+        
+        return movies.data;
+    }
 }
