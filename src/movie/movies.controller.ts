@@ -181,9 +181,6 @@ export class MoviesController {
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async randomMovies(@Query('genresId') genresId: string) {
-        if (typeof (genresId) == "undefined" || genresId == null) {
-            throw new BadRequestException('GenresId is required');
-        }
         return this.moviesService.getRandomMovies(genresId);
     }
 
