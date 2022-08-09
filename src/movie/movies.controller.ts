@@ -58,7 +58,8 @@ export class MoviesController {
         description: 'List of moviesId',
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async recommendMovie(@Query('numberOfRecs') @Optional() numberOfRecs: number = 10, @Req() { user }: Request) {
+    async recommendMovie(@Query('numberOfRecs') numberOfRecs: number = 10, @Req() { user }: Request) {
+        if(!numberOfRecs) numberOfRecs=10;
         return this.moviesService.recommendMovie((<User>user).id.toString(), numberOfRecs);
     }
 

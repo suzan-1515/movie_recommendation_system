@@ -28,7 +28,7 @@ export class MoviesService {
         return this.raccoon.undisliked(movieReactionRequestDto.userId, movieReactionRequestDto.movieId);
     }
 
-    async recommendMovie(userId: string, numberOfRecs: number = 10): Promise<any> {
+    async recommendMovie(userId: string, numberOfRecs = 10): Promise<any> {
         console.log(`User ${userId} recommended ${numberOfRecs} movies`);
         const moviesId = await this.raccoon.recommendFor(userId, numberOfRecs);
         const movies = this.getMoviesDetail(moviesId);
