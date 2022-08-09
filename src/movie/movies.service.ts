@@ -118,9 +118,13 @@ export class MoviesService {
         console.log(`Movies ${moviesId.length} detail`);
         let movies = [];
         for await (const element of moviesId) {
-            const movieDetail = await this.getMovieDetail(element);
-            if (movieDetail)
-                movies.push(movieDetail.data);
+            await this.getMovieDetail(element).then(res => {
+                if (res)
+                    movies.push(res.data);
+            }).catch(err => {
+                console.log(err);
+            });
+
         }
 
         return movies;
@@ -134,7 +138,7 @@ export class MoviesService {
             },
         };
         const movies = await this.theMovieDbService.getDiscoverEndpoint().movie(args);
-        
+
         return movies.data;
     }
 }

@@ -23,6 +23,12 @@ export class AuthController {
         return this.service.login(body);
     }
 
+    @Post('verify-token')
+    @UseInterceptors(ClassSerializerInterceptor)
+    private verifyToken(@Req() { user }: Request): Promise<{} | never> {
+        return this.service.verifyToken(<User>user);
+    }
+
     @Post('refresh')
     @UseGuards(JwtAuthGuard)
     private refresh(@Req() { user }: Request): Promise<string | never> {

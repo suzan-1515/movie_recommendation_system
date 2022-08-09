@@ -1,10 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class MovieReactionRequestDto {
     @ApiProperty()
-    @IsOptional()
-    userId: string;
+    @IsOptional() 
+    userId?: string;
+    
     @ApiProperty()
+    @IsNotEmpty()
     movieId: string;
   }

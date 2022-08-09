@@ -17,9 +17,8 @@ export class MoviesController {
     @UseInterceptors(ClassSerializerInterceptor)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async likeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
-        const user: User = <User>req.user;
-        movieReactionDto.userId = user.id.toString();
+    async likeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
+        movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.likeMovie(movieReactionDto);
     }
 
@@ -27,9 +26,9 @@ export class MoviesController {
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async unlikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
-        const user: User = <User>req.user;
-        movieReactionDto.userId = user.id.toString();
+    async unlikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
+
+        movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.unlikeMovie(movieReactionDto);
     }
 
@@ -37,9 +36,9 @@ export class MoviesController {
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async dislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
-        const user: User = <User>req.user;
-        movieReactionDto.userId = user.id.toString();
+    async dislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
+
+        movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.dislikeMovie(movieReactionDto);
     }
 
@@ -47,9 +46,9 @@ export class MoviesController {
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async undislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
-        const user: User = <User>req.user;
-        movieReactionDto.userId = user.id.toString();
+    async undislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
+
+        movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.unDislikeMovie(movieReactionDto);
     }
 
@@ -59,9 +58,8 @@ export class MoviesController {
         description: 'List of moviesId',
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async recommendMovie(@Query('numberOfRecs') @Optional() numberOfRecs: number = 10, @Req() req: Request) {
-        const user: User = <User>req.user;
-        return this.moviesService.recommendMovie(user.id.toString(), numberOfRecs);
+    async recommendMovie(@Query('numberOfRecs') @Optional() numberOfRecs: number = 10, @Req() { user }: Request) {
+        return this.moviesService.recommendMovie((<User>user).id.toString(), numberOfRecs);
     }
 
     @Get('/similar-users')
@@ -70,9 +68,8 @@ export class MoviesController {
         description: 'List of usersId',
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async similarUsers(@Req() req: Request) {
-        const user: User = <User>req.user;
-        return this.moviesService.similarUsers(user.id.toString());
+    async similarUsers(@Req() { user }: Request) {
+        return this.moviesService.similarUsers((<User>user).id.toString());
     }
 
     @Get('/best-rated')
@@ -149,9 +146,8 @@ export class MoviesController {
         type: MovieReactionDto, isArray: true,
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async likedMovies(@Req() req: Request) {
-        const user: User = <User>req.user;
-        return this.moviesService.likedMovies(user.id.toString());
+    async likedMovies(@Req() { user }: Request) {
+        return this.moviesService.likedMovies((<User>user).id.toString());
     }
 
     @Get('/disiked')
@@ -161,9 +157,9 @@ export class MoviesController {
         type: MovieReactionDto, isArray: true,
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async dislikedMovies(@Req() req: Request) {
-        const user: User = <User>req.user;
-        return this.moviesService.disLikedMovies(user.id.toString());
+    async dislikedMovies(@Req() { user }: Request) {
+
+        return this.moviesService.disLikedMovies((<User>user).id.toString());
     }
 
     @Get('/watched')
@@ -173,9 +169,8 @@ export class MoviesController {
         type: MovieReactionDto, isArray: true,
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async watchedMovies(@Req() req: Request) {
-        const user: User = <User>req.user;
-        return this.moviesService.watchedMovies(user.id.toString());
+    async watchedMovies(@Req() { user }: Request) {
+        return this.moviesService.watchedMovies((<User>user).id.toString());
     }
 
     @Get('/random')

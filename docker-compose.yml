@@ -12,17 +12,17 @@ services:
       ports:
           - 3000:3000
           - 9229:9229
-      links:
-        - mysql
+      # links:
+      #   - mysql
         # - redis
       networks:
           - movie-rs-network
       volumes:
           - .:/usr/src/app
           - /usr/src/app/node_modules
-      depends_on:
-          # - redis
-          - mysql
+      # depends_on:
+      #     # - redis
+      #     - mysql
       restart: always
     prod:
       container_name: movie_rs_api_prod
@@ -40,12 +40,12 @@ services:
       volumes:
           - .:/usr/src/app
           - /usr/src/app/node_modules
-      links:
-        - mysql
-        # - redis
-      depends_on:
-          # - redis
-          - mysql
+      # links:
+      #   - mysql
+      #   # - redis
+      # depends_on:
+      #     # - redis
+      #     - mysql
       restart: unless-stopped
     
     # redis:
@@ -55,26 +55,26 @@ services:
     #     - movie-rs-network
     #   volumes:
     #   - movie_rs_redis_data:/data
-    mysql:
-      container_name: mysql
-      restart: always
-      image: mysql:5.7
-      environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_USER=movie_rs
-        - MYSQL_PASSWORD=movie_rs
-        - MYSQL_DATABASE=movie_rs
-      ports:
-        - "3308:3306"
-      volumes:
-        - movie_rs_mysql_data:/var/lib/mysql
-      networks:
-        - movie-rs-network
+    # mysql:
+    #   container_name: mysql
+    #   restart: always
+    #   image: mysql:5.7
+    #   environment:
+    #     - MYSQL_ROOT_PASSWORD=root
+    #     - MYSQL_USER=movie_rs
+    #     - MYSQL_PASSWORD=movie_rs
+    #     - MYSQL_DATABASE=movie_rs
+    #   ports:
+    #     - "3308:3306"
+    #   volumes:
+    #     - movie_rs_mysql_data:/var/lib/mysql
+    #   networks:
+    #     - movie-rs-network
 
 networks:
   movie-rs-network:
-volumes:
-  movie_rs_mysql_data:
+# volumes:
+#   movie_rs_mysql_data:
   # movie_rs_redis_data:
   # redis:
   #   driver: local

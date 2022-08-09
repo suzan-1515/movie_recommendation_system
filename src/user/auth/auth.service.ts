@@ -7,6 +7,7 @@ import { AuthHelper } from './auth.helper';
 
 @Injectable()
 export class AuthService {
+
   @InjectRepository(User)
   private readonly repository: Repository<User>;
 
@@ -14,7 +15,7 @@ export class AuthService {
   private readonly helper: AuthHelper;
 
   public async register(body: RegisterDto): Promise<User | never> {
-    const { firstName, lastName,email, password, profilePic }: RegisterDto = body;
+    const { firstName, lastName, email, password, profilePic }: RegisterDto = body;
     let user: User = await this.repository.findOne({ where: { email } });
 
     if (user) {
@@ -60,5 +61,14 @@ export class AuthService {
     this.repository.update(user.id, { lastLoginAt: new Date() });
 
     return this.helper.generateToken(user);
+  }
+
+  public async verifyToken(user: User): Promise<{}> {
+    const token: string = await this.helper.generateToken(user);
+
+    return {
+      token,
+      user,
+    }
   }
 }
