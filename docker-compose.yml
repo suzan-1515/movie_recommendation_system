@@ -23,8 +23,6 @@ services:
       depends_on:
           # - redis
           - mysql
-      env_file:
-          - .env
       restart: always
     prod:
       container_name: movie_rs_api_prod
@@ -48,8 +46,6 @@ services:
       depends_on:
           # - redis
           - mysql
-      env_file:
-          - .env
       restart: unless-stopped
     
     # redis:
@@ -69,9 +65,11 @@ services:
         - MYSQL_PASSWORD=movie_rs
         - MYSQL_DATABASE=movie_rs
       ports:
-      - "3308:3306"
+        - "3308:3306"
       volumes:
-      - movie_rs_mysql_data:/var/lib/mysql
+        - movie_rs_mysql_data:/var/lib/mysql
+      networks:
+        - movie-rs-network
 
 networks:
   movie-rs-network:

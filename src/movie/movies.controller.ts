@@ -1,150 +1,192 @@
-import { BadRequestException, Body, Controller, Get, Inject, Optional, Param, Post, Query } from '@nestjs/common';
+import { JwtAuthGuard } from '@/user/auth/auth.guard';
+import { User } from '@/user/user.entity';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Inject, Optional, Param, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { MovieReactionRequestDto } from './dto/movie-reaction-request.dto';
 import { MovieReactionDto } from './dto/movie-reaction.dto';
 import { UserReactionDto } from './dto/user-reaction.dto';
 import { MoviesService } from './movies.service';
+import { Request } from 'express';
+import { MovieReactionRequestDto } from './dto/movie-reaction-request.dto';
 
 @Controller('movies')
 export class MoviesController {
     constructor(private moviesService: MoviesService) { }
 
+    @UseGuards(JwtAuthGuard)
     @Post('/like')
+    @UseInterceptors(ClassSerializerInterceptor)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async likeMovie(@Body() movieReactionRequestDto: MovieReactionRequestDto) {
-        return this.moviesService.likeMovie(movieReactionRequestDto);
+    async likeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
+        const user: User = <User>req.user;
+        movieReactionDto.userId = user.id.toString();
+        return this.moviesService.likeMovie(movieReactionDto);
     }
 
     @Post('/unlike')
+    @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async unlikeMovie(@Body() movieReactionRequestDto: MovieReactionRequestDto) {
-        return this.moviesService.unlikeMovie(movieReactionRequestDto);
+    async unlikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
+        const user: User = <User>req.user;
+        movieReactionDto.userId = user.id.toString();
+        return this.moviesService.unlikeMovie(movieReactionDto);
     }
 
     @Post('/dislike')
+    @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async dislikeMovie(@Body() movieReactionRequestDto: MovieReactionRequestDto) {
-        return this.moviesService.dislikeMovie(movieReactionRequestDto);
+    async dislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
+        const user: User = <User>req.user;
+        movieReactionDto.userId = user.id.toString();
+        return this.moviesService.dislikeMovie(movieReactionDto);
     }
 
     @Post('/undislike')
+    @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async undislikeMovie(@Body() movieReactionRequestDto: MovieReactionRequestDto) {
-        return this.moviesService.unDislikeMovie(movieReactionRequestDto);
+    async undislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() req: Request) {
+        const user: User = <User>req.user;
+        movieReactionDto.userId = user.id.toString();
+        return this.moviesService.unDislikeMovie(movieReactionDto);
     }
 
-    @Get('/recommend/:userId')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @Get('/recommend')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
     })
-    async recommendMovie(@Param('userId') userId: string, @Query('numberOfRecs') @Optional() numberOfRecs: number = 10) {
-        return this.moviesService.recommendMovie(userId, numberOfRecs);
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async recommendMovie(@Query('numberOfRecs') @Optional() numberOfRecs: number = 10, @Req() req: Request) {
+        const user: User = <User>req.user;
+        return this.moviesService.recommendMovie(user.id.toString(), numberOfRecs);
     }
 
-
-    @Get('/similar-users/:userId')
-    @ApiOkResponse({ 
-        description: 'List of usersId', 
-        type: UserReactionDto, isArray: true, 
+    @Get('/similar-users')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of usersId',
     })
-    async similarUsers(@Param('userId') userId: string) {
-        return this.moviesService.similarUsers(userId);
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async similarUsers(@Req() req: Request) {
+        const user: User = <User>req.user;
+        return this.moviesService.similarUsers(user.id.toString());
     }
 
     @Get('/best-rated')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async bestRatedMovies() {
         return this.moviesService.bestRatedMovies();
     }
 
     @Get('/worst-rated')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async worstRatedMovies() {
         return this.moviesService.worstRatedMovies();
     }
 
     @Get('/most-liked')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async mostLikedMovies() {
         return this.moviesService.mostLikedMovies();
     }
 
     @Get('/likers/:movieId')
-    @ApiOkResponse({ 
-        description: 'List of usersId', 
-        type: UserReactionDto, isArray: true, 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of usersId',
+        type: UserReactionDto, isArray: true,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async movieLikers(@Param('movieId') movieId: string) {
         return this.moviesService.movieLikers(movieId);
     }
 
     @Get('/liked-count/:movieId')
-    @ApiOkResponse({ 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
         description: 'Number of like count',
-        type: Number, 
+        type: Number,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async likedMovieCount(@Param('movieId') userId: string) {
         return this.moviesService.likedMovieCount(userId);
     }
 
     @Get('/disliked-count/:movieId')
-    @ApiOkResponse({ 
-        description: 'Number of dislike count', 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'Number of dislike count',
         type: Number,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async dislikedMovieCount(@Param('movieId') userId: string) {
         return this.moviesService.disLikedMovieCount(userId);
     }
 
     // User liked movies
-    @Get('/liked/:userId')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @Get('/liked')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
-    async likedMovies(@Param('userId') userId: string) {
-        return this.moviesService.likedMovies(userId);
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async likedMovies(@Req() req: Request) {
+        const user: User = <User>req.user;
+        return this.moviesService.likedMovies(user.id.toString());
     }
 
-    @Get('/disiked/:userId')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @Get('/disiked')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
-    async dislikedMovies(@Param('userId') userId: string) {
-        return this.moviesService.disLikedMovies(userId);
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async dislikedMovies(@Req() req: Request) {
+        const user: User = <User>req.user;
+        return this.moviesService.disLikedMovies(user.id.toString());
     }
 
-    @Get('/watched/:userId')
-    @ApiOkResponse({ 
-        description: 'List of moviesId', 
-        type: MovieReactionDto, isArray: true, 
+    @Get('/watched')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of moviesId',
+        type: MovieReactionDto, isArray: true,
     })
-    async watchedMovies(@Param('userId') userId: string) {
-        return this.moviesService.watchedMovies(userId);
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async watchedMovies(@Req() req: Request) {
+        const user: User = <User>req.user;
+        return this.moviesService.watchedMovies(user.id.toString());
     }
 
     @Get('/random')
-    @ApiOkResponse({ 
-        description: 'List of random movies', 
-        type: MovieReactionDto, isArray: true, 
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({
+        description: 'List of random movies',
+        type: MovieReactionDto, isArray: true,
     })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async randomMovies(@Query('genresId') genresId: string) {
-        if (typeof(genresId) == "undefined" || genresId == null) {
+        if (typeof (genresId) == "undefined" || genresId == null) {
             throw new BadRequestException('GenresId is required');
         }
         return this.moviesService.getRandomMovies(genresId);
