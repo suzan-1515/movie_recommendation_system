@@ -24,6 +24,7 @@ export class AuthController {
     }
 
     @Post('verify-token')
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(ClassSerializerInterceptor)
     private verifyToken(@Req() { user }: Request): Promise<{} | never> {
         return this.service.verifyToken(<User>user);
