@@ -16,4 +16,5 @@ export class UserController {
   private updateName(@Body() body: UpdateNameDto, @Req() req: Request): Promise<User> {
     return this.service.updateName(body, req);
   }
+
 }
