@@ -1,21 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
-import { UpdateNameDto } from './user.dto';
+import { UserProfileDto } from './user_profile.dto';
 import { User } from './user.entity';
+import { AuthHelper } from './auth/auth.helper';
+import { ChangeUserPasswordDto } from './change_user_password.dto';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
+  
+  @Inject(AuthHelper)
+  private readonly helper: AuthHelper;
 
-  public async updateName(body: UpdateNameDto, req: Request): Promise<User> {
-    const user: User = <User>req.user;
+  public async getProfile(user:User): Promise<User> {
+    return this.repository.findOneBy({id:user.id});
+  }
 
-    user.firstName = body.firstName;
-    user.lastName = body.lastName;
+  public async updateProfile(body: UserProfileDto, user:User): Promise<User> {
+    user.firstName = body.firstName || user.firstName;
+    user.lastName = body.lastName || user.lastName;
+    user.profilePic = body.profilePic || user.profilePic;
 
     return this.repository.save(user);
   }
+
+  public async changePassword(passwordDto: ChangeUserPasswordDto, user:User): Promise<User> {
+    user.password = this.helper.encodePassword(passwordDto.password);
+    
+    return this.repository.save(user);
+  }
+
 }

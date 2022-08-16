@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateNameDto {
+export class UserProfileDto {
   @IsString()
   @IsOptional()
   public readonly firstName?: string;
@@ -8,4 +8,8 @@ export class UpdateNameDto {
   @IsString()
   @IsOptional()
   public readonly lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  public readonly profilePic?: string;
 }
