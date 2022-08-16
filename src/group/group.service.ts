@@ -86,7 +86,7 @@ export class GroupService {
         let members = [];
 
         membersId = [...new Set(membersId)];
-        members = await this.userRepository.find({ where: { id: In(membersId) } });
+        members = await this.userRepository.find({ where: { email: In(membersId) } });
         if (!members || members.length !== membersId.length) {
             throw new NotFoundException('One or more group members not found.');
         }

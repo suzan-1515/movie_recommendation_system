@@ -13,6 +13,6 @@ export class AddGroupMemberDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    membersId?: number[];
+    membersId?: string[];
 
 }
