@@ -69,6 +69,8 @@ export class GroupService {
             .where("user.id = :ownerId", { ownerId: groupOwner.id })
             .select(["group.id"])
             .getOne();
+        
+            if(!groupId) throw new NotFoundException('Group not found.');
     
         return this.repository.findOne({ where: { id: groupId.id }, relations: ['owner', 'members'] });
     }
