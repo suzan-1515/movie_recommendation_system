@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from '@/user/auth/auth.guard';
 import { User } from '@/user/user.entity';
 import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Inject, Optional, Param, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiResponseProperty } from '@nestjs/swagger';
 import { MovieReactionDto } from './dto/movie-reaction.dto';
 import { UserReactionDto } from './dto/user-reaction.dto';
 import { MoviesService } from './movies.service';
@@ -27,7 +27,6 @@ export class MoviesController {
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async unlikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
-
         movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.unlikeMovie(movieReactionDto);
     }
@@ -37,7 +36,6 @@ export class MoviesController {
     @ApiResponse({ status: 201, description: 'The reaction has been successfully created.' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async dislikeMovie(@Body() movieReactionDto: MovieReactionRequestDto, @Req() { user }: Request) {
-
         movieReactionDto.userId = (<User>user).id.toString();
         return this.moviesService.dislikeMovie(movieReactionDto);
     }
@@ -184,8 +182,8 @@ export class MoviesController {
         type: MovieReactionDto, isArray: true,
     })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async randomMovies(@Query('genresId') genresId: string) {
-        return this.moviesService.getRandomMovies(genresId);
+    async randomMovies(@Query('genresId') genresId: string, @Query('page') page:number) {
+        return this.moviesService.getRandomMovies(genresId,page);
     }
 
 }

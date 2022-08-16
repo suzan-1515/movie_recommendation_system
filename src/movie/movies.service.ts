@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Raccoon from '@maruware/raccoon';
 import { MovieReactionRequestDto } from './dto/movie-reaction-request.dto';
 import { TheMovieDbService } from '@harshppatel/nestjs-themoviedb-api/dist/src';
+import * as MovieDB from 'node-themoviedb';
 
 @Injectable()
 export class MoviesService {
@@ -130,15 +131,19 @@ export class MoviesService {
         return movies;
     }
 
-    async getRandomMovies(genresId: string): Promise<any> {
+    async getRandomMovies(genresId: string, page: number=1): Promise<any> {
         console.log(`Random movies`);
-        
+
+
+        var randomPage = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+
         const args = {
             query: {
                 with_genres: genresId,
+                page: randomPage
             },
         };
-        if(!genresId) {
+        if (!genresId) {
             delete args['query']['with_genres'];
         }
 
