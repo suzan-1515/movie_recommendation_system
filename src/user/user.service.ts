@@ -9,6 +9,7 @@ import { ChangeUserPasswordDto } from './change_user_password.dto';
 
 @Injectable()
 export class UserService {
+  
   @InjectRepository(User)
   private readonly repository: Repository<User>;
   
@@ -30,6 +31,11 @@ export class UserService {
   public async changePassword(passwordDto: ChangeUserPasswordDto, user:User): Promise<User> {
     user.password = this.helper.encodePassword(passwordDto.password);
     
+    return this.repository.save(user);
+  }
+
+  public async updateAvatar(response: { originalname: string; filename: string },user:User): Promise<User>  {
+    user.profilePic = '/public/uploads/' + response.filename;
     return this.repository.save(user);
   }
 
