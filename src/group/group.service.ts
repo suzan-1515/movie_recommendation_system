@@ -64,15 +64,15 @@ export class GroupService {
     }
 
     async getGroup(groupOwner: User): Promise<any> {
-        let groupId = await this.repository.createQueryBuilder("group")
-            .leftJoin("group.owner", "user")
-            .where("user.id = :ownerId", { ownerId: groupOwner.id })
-            .select(["group.id"])
-            .getOne();
+        // let groupId = await this.repository.createQueryBuilder("group")
+        //     .leftJoin("group.owner", "user")
+        //     .where("user.id = :ownerId", { ownerId: groupOwner.id })
+        //     .select(["group.id"])
+        //     .getOne();
 
-            if(groupId){
-                return this.repository.findOne({ where: { id: groupId.id }, relations: ['owner', 'members'] });
-            }
+        //     if(groupId){
+        //         return this.repository.findOne({ where: { id: groupId.id }, relations: ['owner', 'members'] });
+        //     }
 
             const groupsId = await this.repository.createQueryBuilder("group")
             .leftJoin("group.members", "user")
