@@ -83,7 +83,7 @@ export class GroupService {
                 throw new NotFoundException('Group not found.');
             }
 
-            const groups = await this.repository.find({ where: { id: In(groupsId) }, relations: ['owner', 'members'] });
+            const groups = await this.repository.find({ where: { id: In(groupsId.map((e)=>e.id)) }, relations: ['owner', 'members'] });
     
         return groups;
     }
