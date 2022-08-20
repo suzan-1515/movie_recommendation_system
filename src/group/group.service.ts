@@ -74,18 +74,18 @@ export class GroupService {
                 return this.repository.findOne({ where: { id: groupId.id }, relations: ['owner', 'members'] });
             }
 
-            groupId = await this.repository.createQueryBuilder("group")
+            const groupsId = await this.repository.createQueryBuilder("group")
             .leftJoin("group.members", "user")
             .where("user.id = :ownerId", { ownerId: groupOwner.id })
-            .select(["group.id"])
-            .getOne();
-        
-            if(!groupId) throw new NotFoundException('Group not found.');
+            .select(["group.id"]).getMany();
 
-            const group = await this.repository.findOne({ where: { id: groupId.id }, relations: ['owner', 'members'] });
-            group.members = group.members.filter((member) => member.id !== group.owner.id);
+            if(groupsId.length === 0){
+                throw new NotFoundException('Group not found.');
+            }
+
+            const groups = await this.repository.find({ where: { id: In(groupsId) }, relations: ['owner', 'members'] });
     
-        return group;
+        return groups;
     }
 
     async addMember(updateGroupDto: AddGroupMemberDto): Promise<any> {
