@@ -8,11 +8,25 @@ import { Request } from 'express';
 import { AddGroupMemberDto } from './dto/add_group_member_dto';
 import { RemoveGroupMemberDto } from './dto/remove_group_member_dto';
 
+// The GroupController is the entry point for the group endpoints.
+// The @UseGuards() decorator is used to define the authentication guard for the endpoint. On this endpoint, the JwtAuthGuard is used.
+/* The @UseInterceptors() decorator is used to define the interceptor for the endpoint. 
+    - On this endpoint, the ClassSerializerInterceptor is used.
+    - It maps the GroupDto class to the response body in JSON format.
+*/
+// @APiResponse decorator is for swagger documentation.
+/* @Req() decorator is used to get the request object.
+    - In this case, user is extracted from the request object.
+    - User is appended to the request object by the JwtAuthGuard upon successful authentication.
+*/
 @Controller('groups')
 export class GroupController {
 
+    // GroupService is injected into the GroupController using the constructor.
     constructor(private groupService: GroupService) { }
 
+    // The @Get() decorator denotes the HTTP GET method for the endpoint.
+    // This endpoint is used to get the group created requested user. It deligate the request to the groupService.
     @UseGuards(JwtAuthGuard)
     @Get('/')
     @UseInterceptors(ClassSerializerInterceptor)
@@ -22,6 +36,13 @@ export class GroupController {
         return this.groupService.getGroup((<User>user));
     }
 
+    // The @Post() decorator denotes the HTTP POST method for the endpoint.
+    /* This endpoint creates the group for the requested user.
+        - It deligates request to the groupService.
+        - The @Body() decorator gets the request body data.
+        - Body data is mapped to CreateGroupDto class and validated by pipe defined in main application configuration.
+    */
+    // Group owner property is updated to the id of current user.
     @UseGuards(JwtAuthGuard)
     @Post('/')
     @UseInterceptors(ClassSerializerInterceptor)
@@ -32,6 +53,8 @@ export class GroupController {
         return this.groupService.createGroup(createGroupDto);
     }
 
+    // The @Put() decorator denotes the HTTP PUT method for the endpoint.
+    // This endpoint adds member the group created by requested user.
     @UseGuards(JwtAuthGuard)
     @Put('/add-member')
     @UseInterceptors(ClassSerializerInterceptor)
@@ -42,6 +65,8 @@ export class GroupController {
         return this.groupService.addMember(updateGroupDto);
     }
 
+    // The @Delete() decorator denotes the HTTP Delete method for the endpoint.
+    // This endpoint removes member from the group created by requested user.
     @UseGuards(JwtAuthGuard)
     @Delete('/remove-member')
     @UseInterceptors(ClassSerializerInterceptor)
@@ -52,6 +77,7 @@ export class GroupController {
         return this.groupService.removeMember(removeGroupMemberDto);
     }
 
+    // This endpoint deletes the group created by requested user.
     @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     @UseInterceptors(ClassSerializerInterceptor)

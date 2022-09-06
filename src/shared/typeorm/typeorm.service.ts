@@ -2,6 +2,9 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
+// Typeorm service provides the typeorm connection details to the entire application.
+// It is initialized with the database connection details from the config service.
+// For database, MYSQL database is used.
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   @Inject(ConfigService)

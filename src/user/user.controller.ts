@@ -8,6 +8,7 @@ import { ChangeUserPasswordDto } from './change_user_password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
+// Helper function to generate uploaded avatar file name with extension.
 const imageFileFilter = (req, file, callback) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
     return callback(new Error('Only image files are allowed!'), false);
@@ -54,6 +55,10 @@ export class UserController {
     return this.service.changePassword(body, user);
   }
 
+  // Upload avatar image and and update user profile
+  // Uploaded file is saved in the uploads folder
+  // Upload file size limit is around 3MB.
+  // Once file is uploaded, user update profile is called to update the avatar field in the user table.
   @Post('/avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)

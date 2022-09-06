@@ -5,6 +5,7 @@ import { User } from '../user.entity';
 import { LoginDto, RegisterDto } from './auth.dto';
 import { AuthHelper } from './auth.helper';
 
+// Auth service provides the authentication logic for the application.
 @Injectable()
 export class AuthService {
 
@@ -37,6 +38,7 @@ export class AuthService {
     const { email, password }: LoginDto = body;
     let user: User = await this.repository.findOne({ where: { email } });
 
+    // Check if user exist. If not, throw an error.
     if (!user) {
       throw new HttpException('No user found', HttpStatus.NOT_FOUND);
     }

@@ -34,6 +34,7 @@ export class UserService {
     return this.repository.save(user);
   }
 
+  // Since static files are uploaded to public directory, append path to the file name. and update user profile.
   public async updateAvatar(response: { originalname: string; filename: string },user:User): Promise<User>  {
     user.profilePic = '/public/uploads/' + response.filename;
     return this.repository.save(user);

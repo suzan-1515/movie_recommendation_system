@@ -2,6 +2,8 @@ import Raccoon from '@maruware/raccoon';
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+// Raccoon module is a global module that provides the raccoon instance to the entire application.
+// It is initialized with the redis connection details from the config service.
 @Global()
 @Module({
     providers: [

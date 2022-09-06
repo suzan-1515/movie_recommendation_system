@@ -9,6 +9,9 @@ import { JwtStrategy } from './auth.strategy';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../user.entity';
 
+// Auth module provides the authentication services for the application.
+// Passport module is used for authentication with jwt token strategy on user property.
+// JTW secret and expiry interval is stored in the environment variable.
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', property: 'user' }),

@@ -4,11 +4,16 @@ import { MovieReactionRequestDto } from './dto/movie-reaction-request.dto';
 import { TheMovieDbService } from '@harshppatel/nestjs-themoviedb-api/dist/src';
 import * as MovieDB from 'node-themoviedb';
 
+// Movies service handles the business logic for the movie feature.
+// It is injected into the MoviesController.
 @Injectable()
 export class MoviesService {
 
+    // Inject the raccoon instance and TMBD api service into the service.
     constructor(@Inject('RACCOON') private raccoon: Raccoon, private readonly theMovieDbService: TheMovieDbService) { }
 
+    // Like a movie with userId and movieId from the request. Recommendation engile raccoon provides the like method.
+    // once the movie is liked, it is added to the user's liked list in radis and processed by the recommendation engine.
     async likeMovie(movieReactionRequestDto: MovieReactionRequestDto): Promise<void> {
         console.log(`User ${movieReactionRequestDto.userId} liked movie ${movieReactionRequestDto.movieId}`);
         return this.raccoon.liked(movieReactionRequestDto.userId, movieReactionRequestDto.movieId);
@@ -29,6 +34,11 @@ export class MoviesService {
         return this.raccoon.undisliked(movieReactionRequestDto.userId, movieReactionRequestDto.movieId);
     }
 
+    /* Get the recommended movies for the user.
+        - The recommendation engine raccoon provides the recommendFor method that takes user id and number of movies to recommend.
+        - Since the engine returns the movie ids, we need to get the movie details from the TMDB api.
+        - For that, we use the getMoviesDetail method that takes the movie ids and returns the movie details.
+    */
     async recommendMovie(userId: string, numberOfRecs = 10): Promise<any> {
         console.log(`User ${userId} recommended ${numberOfRecs} movies`);
         const moviesId = await this.raccoon.recommendFor(userId, numberOfRecs);
@@ -81,6 +91,12 @@ export class MoviesService {
         return this.raccoon.dislikedCount(movieId);
     }
 
+    /*
+        Get User liked movies
+        - The recommendation engine raccoon provides the allLikedFor method that takes user id.
+        - Since the engine returns the movie ids, we need to get the movie details from the TMDB api.
+        - For that, we use the getMoviesDetail method that takes the movie ids and returns the movie details.
+    */
     async likedMovies(userId: string): Promise<string[]> {
         console.log(`User ${userId} liked movies`);
         const moviesId = await this.raccoon.allLikedFor(userId);
@@ -105,6 +121,7 @@ export class MoviesService {
         return movies;
     }
 
+    // This method takes the movie id and returns the movie details from the TMDB api.
     async getMovieDetail(movieId: string): Promise<any> {
         console.log(`Movie ${movieId} detail`);
         const args = {
@@ -115,6 +132,12 @@ export class MoviesService {
         return this.theMovieDbService.getMovieEndpoint().getDetails(args);
     }
 
+    /* 
+        This method takes the movie ids and returns the movie details from the TMDB api.
+        - The TMDB api do not allows to get the movie details for multiple movies at once.
+        - So, we need to call the getMovieDetail method for each movie id.
+        - For that, we use the basic loop that loops through movies id and get movie details and add it to a array.
+    */
     async getMoviesDetail(moviesId: string[]): Promise<any> {
         console.log(`Movies ${moviesId.length} detail`);
         let movies = [];
@@ -131,10 +154,12 @@ export class MoviesService {
         return movies;
     }
 
+    // This method takes genres id and page number and returns random movies from the TMDB api.
     async getRandomMovies(genresId: string, page: number=1): Promise<any> {
         console.log(`Random movies`);
 
 
+        // Get a random page number between 1 and 100
         var randomPage = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
 
         const args = {
@@ -143,6 +168,7 @@ export class MoviesService {
                 page: randomPage
             },
         };
+        // Check if genres id exists. If not, delete query paramerer and get random movies from all genres.
         if (!genresId) {
             delete args['query']['with_genres'];
         }

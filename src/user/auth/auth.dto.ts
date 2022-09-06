@@ -1,6 +1,7 @@
 import { Trim } from 'class-sanitizer';
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
+// DTO for user registration.
 export class RegisterDto {
   @Trim()
   @IsEmail()
@@ -21,6 +22,7 @@ export class RegisterDto {
   public readonly profilePic: string;
 }
 
+// DTO for user login.
 export class LoginDto {
   @Trim()
   @IsEmail()

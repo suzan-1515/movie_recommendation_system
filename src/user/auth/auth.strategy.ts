@@ -5,6 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../user.entity';
 import { AuthHelper } from './auth.helper';
 
+// Jwt strategy is used to verify the token and return the user.
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   @Inject(AuthHelper)

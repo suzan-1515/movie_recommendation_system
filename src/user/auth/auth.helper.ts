@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../user.entity';
 
+// Auth service provides the authentication logic for the application.
 @Injectable()
 export class AuthHelper {
   @InjectRepository(User)
@@ -12,6 +13,7 @@ export class AuthHelper {
 
   private readonly jwt: JwtService;
 
+  // JWT service is used to generate and verify the JWT token. It is provided by the nestjs/jwt package.
   constructor(jwt: JwtService) {
     this.jwt = jwt;
   }
@@ -21,17 +23,19 @@ export class AuthHelper {
     return this.jwt.decode(token, null);
   }
 
-  // Get User by User ID we get from decode()
+  // Get User by id the we get after decoding the JWT Token
+  // Token is encoded with user id and email
   public async validateUser(decoded: any): Promise<User> {
     return this.repository.findOne({ where: { id: decoded.id } });
   }
 
-  // Generate JWT Token
+  // Generate JWT Token using user id and email
   public generateToken(user: User): string {
     return this.jwt.sign({ id: user.id, email: user.email });
   }
 
-  // Validate User's password
+  // Validate encrypted User's password using bcrypt package
+  // password are hashed using bcrypt package
   public isPasswordValid(password: string, userPassword: string): boolean {
     return bcrypt.compareSync(password, userPassword);
   }
